@@ -32,6 +32,17 @@ totalDistance (firstList, secondList) = do
   sum differences
 
 
+countItemOccurances ::  Integer -> [Integer] -> Int
+countItemOccurances _ [] = 0
+countItemOccurances x y = length (filter (\n -> (n == x)) y) * (fromIntegral x)
+
+
+similarityScore :: [Integer] -> [Integer] -> Int
+similarityScore [] _ = 0
+similarityScore _ [] = 0
+similarityScore (x:xs) y = countItemOccurances x y + similarityScore xs y
+
+
 main :: IO ()
 main = do
   x <- getArgs
@@ -41,6 +52,8 @@ main = do
     let input_lines = lines raw_input
     let parsed_nums = parseNums input_lines
     let result = totalDistance parsed_nums
-    print ("Result: " ++ (show result))
+    let simScore = similarityScore (fst parsed_nums) (snd parsed_nums)
+    print ("Total Distances: " ++ (show result))
+    print ("Similarity Score: " ++ (show simScore))
   else
     print "File not found."
